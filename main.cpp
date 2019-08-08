@@ -36,34 +36,22 @@ int main() {
 
   CKKSEncoder encoder(context);
   size_t slot_count = encoder.slot_count();
-  cout << "Number of slots: " << slot_count << endl;
-
-  // vector<double> input;
-  // input.reserve(slot_count);
-  // double curr_point = 0;
-  // double step_size = 1.0 / (static_cast<double>(slot_count) - 1);
-  // for (size_t i = 0; i < slot_count; i++, curr_point += step_size)
-  // {
-  //     input.push_back(curr_point);
-  // }
-  // cout << "Input vector: " << endl;
-  // print_vector(input, 3, 7);
 
 
-
-  cout << "Evaluating polynomial PI*x^3 + 0.4x + 1 ..." << endl;
 
   /*
   Valores de la regresión cuadratica "Cabo de Gata"
   */
-  double a1 = -0.39;
-  double a2 = 5.69;
-  double a3 = 3.97;
+  double a = -0.39;
+  double b = 5.69;
+  double c = 3.97;
+  
+  cout << "Evaluating polynomial " << a << "*x^2 + " << b << "x + " << c << " ..." << endl;
 
-  Plaintext a1_plain, a2_plain, a3_plain;
-  encoder.encode(a1, scale, a1_plain);
-  encoder.encode(a2, scale, a2_plain);
-  encoder.encode(a3, scale, a3_plain);
+  Plaintext a_plain, b_plain, c_plain;
+  encoder.encode(a, scale, a_plain);
+  encoder.encode(b, scale, b_plain);
+  encoder.encode(c, scale, c_plain);
 
 
   /*
@@ -97,18 +85,37 @@ int main() {
     resultado = y - p
 
   */
-  Ciphertext p1_encrypted, p2_encrypted, p3_encrypted, p_encrypted, encrypted_result;
+  Ciphertext p1_encrypted, p2_encrypted, px_encrypted, p3_encrypted, p_encrypted, encrypted_result;
 
   // TODO Ver cuando tengo que reescalar
-  evaluator.square(x_encrypted, p1_encrypted);
+  evaluator.multiply_plain(x_encrypted, a_plain, p1_encrypted);
   evaluator.relinearize_inplace(p1_encrypted, relin_keys);
+  // Reescalado tras multiplicación
+  evaluator.rescale_to_next_inplace(p1_encrypted);
 
-  evaluator.multiply_plain(p1_encrypted, a1_plain, p2_encrypted);
-  evaluator.multiply_plain(x_encrypted, a2_plain, p3_encrypted);
+  // Quitamos uno a chain de x para poder multiplicar x_encry por p1_encrypted
+  evaluator.mod_switch_to_next(x_encrypted, px_encrypted);
+  evaluator.multiply(px_encrypted, p1_encrypted, p2_encrypted);
+  evaluator.rescale_to_next_inplace(p2_encrypted);
 
-  evaluator.add(p1_encrypted, p2_encrypted, p_encrypted);
-  evaluator.add_plain_inplace(p_encrypted, a3_plain);
+  evaluator.multiply_plain(x_encrypted, b_plain, p3_encrypted);
+  evaluator.rescale_to_next_inplace(p3_encrypted);
+  evaluator.mod_switch_to_next_inplace(p3_encrypted);
 
+
+  p2_encrypted.scale() = scale;
+  p3_encrypted.scale() = scale;
+
+  evaluator.add(p2_encrypted, p3_encrypted, p_encrypted);
+
+  // Hemos bajado 2 posiciones en la cadena
+  evaluator.mod_switch_to_next_inplace(c_plain);
+  evaluator.mod_switch_to_next_inplace(c_plain);
+  evaluator.add_plain_inplace(p_encrypted, c_plain);
+
+  // Hemos bajado 2 posiciones en la cadena
+  evaluator.mod_switch_to_next_inplace(y_encrypted);
+  evaluator.mod_switch_to_next_inplace(y_encrypted);
   evaluator.sub(y_encrypted, p_encrypted, encrypted_result);
 
 
@@ -120,7 +127,7 @@ int main() {
   vector<double> result_vector;
   encoder.decode(plain_result, result_vector);
   double result = result_vector[0];
-  cout << "Result:" << result << endl;
+  cout << "Result: " << result << endl;
 
 
   return 0;
