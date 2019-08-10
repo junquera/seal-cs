@@ -37,15 +37,13 @@ int main() {
   CKKSEncoder encoder(context);
   size_t slot_count = encoder.slot_count();
 
-
-
   /*
   Valores de la regresión cuadratica "Cabo de Gata"
   */
   double a = -0.39;
   double b = 5.69;
   double c = 3.97;
-  
+
   cout << "Evaluating polynomial " << a << "*x^2 + " << b << "x + " << c << " ..." << endl;
 
   Plaintext a_plain, b_plain, c_plain;
@@ -118,9 +116,8 @@ int main() {
   evaluator.mod_switch_to_next_inplace(y_encrypted);
   evaluator.sub(y_encrypted, p_encrypted, encrypted_result);
 
-
   /*
-  First print the true result.
+  Print the result.
   */
   Plaintext plain_result;
   decryptor.decrypt(encrypted_result, plain_result);
