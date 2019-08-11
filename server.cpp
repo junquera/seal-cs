@@ -5,13 +5,31 @@
 #include "main.h"
 #include <vector>
 
+
 using namespace std;
 using namespace seal;
 
-int main() {
+class SServer {
+
+  public:
+    SServer();
+    void distance()
+};
+
+SServer::SServer(){
+}
+
+
+class SClient {
+
+  public:
+    SClient();
+    void distance()
+};
+
+SClient::SClient(){
 
   EncryptionParameters parms(scheme_type::CKKS);
-
 
   size_t poly_modulus_degree = 8192;
   parms.set_poly_modulus_degree(poly_modulus_degree);
@@ -29,12 +47,34 @@ int main() {
   auto secret_key = keygen.secret_key();
   auto relin_keys = keygen.relin_keys();
 
+
+  // Save keys
+  ofscream public, secret, relin, parameters;
+
+  public.open("public.key", ios::binary);
+  secret.open("secret.key", ios::binary);
+  relin.open("relin.key", ios::binary);
+  parameters.open("parameters.data", ios::binary);
+
+  public_key.save(public);
+  secret_key.save(secret);
+  relin_keys.save(relin);
+
+  // Save parameters
+  EncryptionParameters.Save(parms, parameters);
+
   Encryptor encryptor(context, public_key);
   Evaluator evaluator(context);
   Decryptor decryptor(context, secret_key);
 
   CKKSEncoder encoder(context);
   size_t slot_count = encoder.slot_count();
+
+
+}
+
+int main() {
+
 
   /*
   Valores de la regresión cuadratica "Cabo de Gata"
