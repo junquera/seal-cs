@@ -26,10 +26,10 @@ class SClient {
     PublicKey public_key;
     SecretKey secret_key;
     RelinKeys relin_keys;
-    Encryptor encryptor;
-    Evaluator evaluator;
-    Decryptor decryptor;
-    CKKSEncoder encoder;
+    Encryptor* encryptor;
+    Evaluator* evaluator;
+    Decryptor* decryptor;
+    CKKSEncoder* encoder;
 };
 
 #endif

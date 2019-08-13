@@ -16,8 +16,8 @@ class SServer {
     SServer();
     Ciphertext distance(Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys);
   private:
-    Evaluator evaluator;
-    CKKSEncoder encoder;
+    Evaluator* evaluator;
+    CKKSEncoder* encoder;
 };
 
 #endif

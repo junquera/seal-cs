@@ -12,7 +12,7 @@ SClient::SClient(){
   // Save parameters
   ofstream parameters;
   parameters.open("parameters.data", ios::binary);
-  EncryptionParameters.Save(parms, parameters);
+  EncryptionParameters::Save(parms, parameters);
 
   auto context = SEALContext::Create(parms);
   // print_parameters(context);
@@ -34,38 +34,38 @@ SClient::SClient(){
   secret_key.save(sec);
   relin_keys.save(rel);
 
-  encryptor = Encryptor(context, public_key);
-  evaluator = Evaluator(context);
-  decryptor = Decryptor(context, secret_key);
-  encoder = CKKSEncoder(context);
+  encryptor = new Encryptor(context, public_key);
+  evaluator = new Evaluator(context);
+  decryptor = new Decryptor(context, secret_key);
+  encoder = new CKKSEncoder(context);
 
 }
 
-double SClient::distancia(double mes, double temperatura){
+double SClient::distance(double mes, double temperatura){
 
   Plaintext x_plain, y_plain;
 
-  encoder.encode(mes, scale, x_plain);
-  encoder.encode(temperatura, scale, y_plain);
+  encoder->encode(mes, SCALE, x_plain);
+  encoder->encode(temperatura, SCALE, y_plain);
 
   Ciphertext x_encrypted, y_encrypted, encrypted_result;
-  encryptor.encrypt(x_plain, x_encrypted);
-  encryptor.encrypt(y_plain, y_encrypted);
+  encryptor->encrypt(x_plain, x_encrypted);
+  encryptor->encrypt(y_plain, y_encrypted);
 
   SServer server;
-  encrypted_result = server.distance(x_encrypted, y_encrypted);
+  encrypted_result = server.distance(x_encrypted, y_encrypted, relin_keys);
 
   Plaintext plain_result;
-  decryptor.decrypt(encrypted_result, plain_result);
+  decryptor->decrypt(encrypted_result, plain_result);
 
   vector<double> result_vector;
-  encoder.decode(plain_result, result_vector);
+  encoder->decode(plain_result, result_vector);
 
   return result_vector[0];
 
 }
 
-int main(Ciphertext encrypted_result) {
+int main() {
 
   /*
   Temperatura en Junio de 2018 en Cabo de Gata
