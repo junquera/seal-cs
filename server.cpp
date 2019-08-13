@@ -1,9 +1,22 @@
 #include "server.h"
 
 SServer::SServer(){
+
+  EncryptionParameters parms;
+
+  // Save parameters
+  ifstream parameters;
+  parameters.open("parameters.data", ios::binary);
+  parms = EncryptionParameters.Load(parameters);
+
+  auto context = SEALContext::Create(parms);
+
+  evaluator = Evaluator(context);
+  encoder = CKKSEncoder(context);
+  
 }
 
-Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted){
+Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys){
 
     /*
     Valores de la regresión cuadratica "Cabo de Gata"

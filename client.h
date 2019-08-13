@@ -2,6 +2,8 @@
 #define _CLIENT_H_INCLUDED_
 
 #include <iostream>
+#include <fstream>      // std::ofstream
+
 
 #include "seal/seal.h"
 #include "constants.h"
@@ -18,7 +20,16 @@ using namespace seal;
 class SClient {
   public:
     SClient();
-    float distance(double mes, double temperatura);
+    double distance(double mes, double temperatura);
+
+  private:
+    PublicKey public_key;
+    SecretKey secret_key;
+    RelinKeys relin_keys;
+    Encryptor encryptor;
+    Evaluator evaluator;
+    Decryptor decryptor;
+    CKKSEncoder encoder;
 };
 
 #endif

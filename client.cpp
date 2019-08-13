@@ -9,36 +9,35 @@ SClient::SClient(){
   parms.set_coeff_modulus(CoeffModulus::Create(
       poly_modulus_degree, { 60, 40, 40, 60 }));
 
+  // Save parameters
+  ofstream parameters;
+  parameters.open("parameters.data", ios::binary);
+  EncryptionParameters.Save(parms, parameters);
 
   auto context = SEALContext::Create(parms);
   // print_parameters(context);
   // cout << endl;
 
   KeyGenerator keygen(context);
-  auto public_key = keygen.public_key();
-  auto secret_key = keygen.secret_key();
-  auto relin_keys = keygen.relin_keys();
+  public_key = keygen.public_key();
+  secret_key = keygen.secret_key();
+  relin_keys = keygen.relin_keys();
 
 
   // Save keys
-  ofscream public, secret, relin, parameters;
+  ofstream pub, sec, rel;
+  pub.open("public.key", ios::binary);
+  sec.open("secret.key", ios::binary);
+  rel.open("relin.key", ios::binary);
 
-  public.open("public.key", ios::binary);
-  secret.open("secret.key", ios::binary);
-  relin.open("relin.key", ios::binary);
-  parameters.open("parameters.data", ios::binary);
+  public_key.save(pub);
+  secret_key.save(sec);
+  relin_keys.save(rel);
 
-  public_key.save(public);
-  secret_key.save(secret);
-  relin_keys.save(relin);
-
-  // Save parameters
-  EncryptionParameters.Save(parms, parameters);
-
-  Encryptor encryptor(context, public_key);
-  Evaluator evaluator(context);
-  Decryptor decryptor(context, secret_key);
-  CKKSEncoder encoder(context);
+  encryptor = Encryptor(context, public_key);
+  evaluator = Evaluator(context);
+  decryptor = Decryptor(context, secret_key);
+  encoder = CKKSEncoder(context);
 
 }
 
