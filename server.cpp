@@ -23,7 +23,11 @@ Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, Rel
     double b = 5.69;
     double c = 3.97;
 
-    // TODO Hacer vectores con las temperaturas
+    /*
+     TODO Hacer vectores con las temperaturas
+     // Como en el ejemplo 5, pero con una fila por cada ciudad,
+     Mejor aún, un vector para las aes, otro para las bs y otro para las cs
+    */
     Plaintext a_plain, b_plain, c_plain;
     encoder->encode(a, SCALE, a_plain);
     encoder->encode(b, SCALE, b_plain);
