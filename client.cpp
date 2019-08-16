@@ -41,7 +41,7 @@ SClient::SClient(){
 
 }
 
-vector<Result> SClient::distance(double mes, double temperatura){
+vector<Distance> SClient::distance(double mes, double temperatura){
 
   Plaintext x_plain, y_plain;
   encoder->encode(mes, SCALE, x_plain);
@@ -51,21 +51,22 @@ vector<Result> SClient::distance(double mes, double temperatura){
   encryptor->encrypt(x_plain, x_encrypted);
   encryptor->encrypt(y_plain, y_encrypted);
 
-  /*
-    Inicializamos las curvas con las que queremos trabajar
-  */
-  vector<Curva> curvas;
-  curvas.push_back(curva_cabo_de_gata);
-  curvas.push_back(curva_finisterre);
 
   /*
-    Inicializamos el vector de resultados
+  Inicializamos las curvas con las que queremos trabajar
   */
-  vector<Result> result;
+  SServer server;
+  server.addCurva(curva_cabo_de_gata);
+  server.addCurva(curva_finisterre);
+
+  /*
+  Inicializamos el vector de resultados
+  */
+  vector<Distance> result;
+  vector<string> curvas = server.getCurveNames();
   result.reserve(curvas.size());
 
-  SServer server;
-  encrypted_result = server.distance(curvas, x_encrypted, y_encrypted, relin_keys);
+  encrypted_result = server.distance(x_encrypted, y_encrypted, relin_keys);
 
   Plaintext plain_result;
   decryptor->decrypt(encrypted_result, plain_result);
@@ -78,7 +79,7 @@ vector<Result> SClient::distance(double mes, double temperatura){
     de las curvas que los han originado para devolverlos
   */
   for(int i = 0; i < curvas.size(); i++){
-    Result aux_res(curvas[i].name, result_vector[i]);
+    Distance aux_res(curvas[i], result_vector[i]);
     result.push_back(aux_res);
   }
 
@@ -95,7 +96,7 @@ int main() {
   float y = 23.0;
 
   SClient client;
-  vector<Result> result = client.distance(x, y);
+  vector<Distance> result = client.distance(x, y);
   for(int i = 0; i < result.size(); i++)
     cout << result[i].name << ": " << result[i].distance << endl;
 

@@ -6,6 +6,7 @@
 
 #include "seal/seal.h"
 #include <vector>
+#include <string>
 
 #include "constants.h"
 #include "curva.h"
@@ -17,10 +18,13 @@ using namespace seal;
 class SServer {
   public:
     SServer();
-    Ciphertext distance(vector<Curva> curvas, Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys);
+    Ciphertext distance(Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys);
+    void addCurva(Curva c);
+    vector<string> getCurveNames();
   private:
     Evaluator* evaluator;
     CKKSEncoder* encoder;
+    vector<Curva> curvas;
 };
 
 #endif

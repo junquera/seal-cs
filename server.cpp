@@ -11,10 +11,13 @@ SServer::SServer(){
 
   evaluator = new Evaluator(context);
   encoder = new CKKSEncoder(context);
+};
 
-}
+void SServer::addCurva(Curva c){
+  curvas.push_back(c);
+};
 
-Ciphertext SServer::distance(vector<Curva> curvas, Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys){
+Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys){
 
     /*
      TODO Hacer vectores con las temperaturas
@@ -93,5 +96,15 @@ Ciphertext SServer::distance(vector<Curva> curvas, Ciphertext x_encrypted, Ciphe
     evaluator->sub(y_encrypted, p_encrypted, encrypted_result);
 
     return encrypted_result;
+
+};
+
+vector<string> SServer::getCurveNames(){
+  vector<string> names;
+  names.reserve(curvas.size());
+  for(Curva c: curvas)
+    names.push_back(c.name);
+
+  return names;
 
 }
