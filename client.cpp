@@ -54,6 +54,12 @@ Ciphertext SClient::encrypt(double a) {
 
 Ciphertext SClient::encrypt(vector<double> a) {
 
+  size_t slot_count = encoder->slot_count();
+  if(a.size() > slot_count){
+    // Si no se pueden codificar tantas curvas
+    throw "Error: No hay suficiente espacio para tantos valores";
+  }
+
   Plaintext plain;
   encoder->encode(a, SCALE, plain);
 
@@ -74,11 +80,11 @@ vector<double> SClient::decrypt(Ciphertext a) {
   return result_vector;
 };
 
-vector<Distance> SClient::distance(double mes, double temperatura){
+vector<Distance> distance(SClient client, double mes, double temperatura){
 
   Ciphertext x_encrypted, y_encrypted, encrypted_result;
-  x_encrypted = encrypt(mes);
-  y_encrypted = encrypt(temperatura);
+  x_encrypted = client.encrypt(mes);
+  y_encrypted = client.encrypt(temperatura);
 
   /*
   Inicializamos las curvas con las que queremos trabajar
@@ -93,9 +99,9 @@ vector<Distance> SClient::distance(double mes, double temperatura){
   vector<Distance> result;
   vector<string> curvas = server.getCurveNames();
   result.reserve(curvas.size());
-  encrypted_result = server.distance(x_encrypted, y_encrypted, relin_keys);
+  encrypted_result = server.distance(x_encrypted, y_encrypted, client.relin_keys);
 
-  vector<double> result_vector = decrypt(encrypted_result);
+  vector<double> result_vector = client.decrypt(encrypted_result);
 
   /*
     Asociamos los resultados del servidor (double's) con los nombres
@@ -119,7 +125,7 @@ int main() {
   float y = 23.0;
 
   SClient client;
-  vector<Distance> result = client.distance(x, y);
+  vector<Distance> result = distance(client, x, y);
   for(int i = 0; i < result.size(); i++)
     cout << result[i].name << ": " << result[i].distance << endl;
 
