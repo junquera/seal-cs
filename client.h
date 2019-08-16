@@ -30,7 +30,9 @@ class SClient {
   public:
     SClient();
     vector<Distance> distance(double mes, double temperatura);
-
+    Ciphertext encrypt(double a);
+    Ciphertext encrypt(vector<double> a);
+    vector<double> decrypt(Ciphertext a);
   private:
     PublicKey public_key;
     SecretKey secret_key;

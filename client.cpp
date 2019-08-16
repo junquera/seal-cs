@@ -23,7 +23,6 @@ SClient::SClient(){
   secret_key = keygen.secret_key();
   relin_keys = keygen.relin_keys();
 
-
   // Save keys
   ofstream pub, sec, rel;
   pub.open("public.key", ios::binary);
@@ -41,16 +40,45 @@ SClient::SClient(){
 
 }
 
+Ciphertext SClient::encrypt(double a) {
+
+  Plaintext plain;
+  encoder->encode(a, SCALE, plain);
+
+  Ciphertext encrypted;
+  encryptor->encrypt(plain, encrypted);
+
+  return encrypted;
+};
+
+
+Ciphertext SClient::encrypt(vector<double> a) {
+
+  Plaintext plain;
+  encoder->encode(a, SCALE, plain);
+
+  Ciphertext encrypted;
+  encryptor->encrypt(plain, encrypted);
+
+  return encrypted;
+};
+
+vector<double> SClient::decrypt(Ciphertext a) {
+
+  Plaintext plain_result;
+  decryptor->decrypt(a, plain_result);
+
+  vector<double> result_vector;
+  encoder->decode(plain_result, result_vector);
+
+  return result_vector;
+};
+
 vector<Distance> SClient::distance(double mes, double temperatura){
 
-  Plaintext x_plain, y_plain;
-  encoder->encode(mes, SCALE, x_plain);
-  encoder->encode(temperatura, SCALE, y_plain);
-
   Ciphertext x_encrypted, y_encrypted, encrypted_result;
-  encryptor->encrypt(x_plain, x_encrypted);
-  encryptor->encrypt(y_plain, y_encrypted);
-
+  x_encrypted = encrypt(mes);
+  y_encrypted = encrypt(temperatura);
 
   /*
   Inicializamos las curvas con las que queremos trabajar
@@ -65,14 +93,9 @@ vector<Distance> SClient::distance(double mes, double temperatura){
   vector<Distance> result;
   vector<string> curvas = server.getCurveNames();
   result.reserve(curvas.size());
-
   encrypted_result = server.distance(x_encrypted, y_encrypted, relin_keys);
 
-  Plaintext plain_result;
-  decryptor->decrypt(encrypted_result, plain_result);
-
-  vector<double> result_vector;
-  encoder->decode(plain_result, result_vector);
+  vector<double> result_vector = decrypt(encrypted_result);
 
   /*
     Asociamos los resultados del servidor (double's) con los nombres
