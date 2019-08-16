@@ -17,10 +17,19 @@ using namespace std;
 using namespace seal;
 
 
+class Result {
+  public:
+    string name;
+    double distance;
+
+    Result(string name, double distance) : name{name}, distance{distance} {
+    }
+};
+
 class SClient {
   public:
     SClient();
-    double distance(double mes, double temperatura);
+    vector<Result> distance(double mes, double temperatura);
 
   private:
     PublicKey public_key;

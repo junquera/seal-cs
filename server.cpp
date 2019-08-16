@@ -14,14 +14,7 @@ SServer::SServer(){
 
 }
 
-Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys){
-
-    /*
-    Valores de la regresión cuadratica "Cabo de Gata"
-    */
-    double a = -0.39;
-    double b = 5.69;
-    double c = 3.97;
+Ciphertext SServer::distance(vector<Curva> curvas, Ciphertext x_encrypted, Ciphertext y_encrypted, RelinKeys relin_keys){
 
     /*
      TODO Hacer vectores con las temperaturas
@@ -29,11 +22,27 @@ Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, Rel
      Mejor aún, un vector para las aes, otro para las bs y otro para las cs
     */
     Plaintext a_plain, b_plain, c_plain;
+
+    size_t slot_count = encoder->slot_count();
+    if(curvas.size() > slot_count){
+      // Si no se pueden codificar tantas curvas
+      throw "Error: No hay suficiente espacio para tantas curvas";
+    }
+
+    vector<double> a, b, c;
+    for(int i = 0; i < curvas.size(); i++){
+      a.push_back(curvas[i].a);
+      b.push_back(curvas[i].b);
+      c.push_back(curvas[i].c);
+    }
+
+
     encoder->encode(a, SCALE, a_plain);
     encoder->encode(b, SCALE, b_plain);
     encoder->encode(c, SCALE, c_plain);
 
-    cout << "Evaluating polynomial " << a << "*x^2 + " << b << "x + " << c << " ..." << endl;
+    // cout << "Evaluating polynomial " << a << "*x^2 + " << b << "x + " << c << " ..." << endl;
+
     /*
       Calcularemos:
 
