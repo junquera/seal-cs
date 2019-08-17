@@ -30,6 +30,7 @@ class SClient {
   public:
     SClient();
     SClient(string config_mask);
+    void saveConfig(string config_mask);
     Ciphertext encrypt(double a);
     Ciphertext encrypt(vector<double> a);
     vector<double> decrypt(Ciphertext a);
@@ -44,6 +45,7 @@ class SClient {
     Evaluator* evaluator;
     Decryptor* decryptor;
     CKKSEncoder* encoder;
+    string config_mask;
 };
 
 #endif
