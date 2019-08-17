@@ -96,8 +96,8 @@ vector<Distance> distance(SClient client, double mes, double temperatura){
   /*
   Inicializamos el vector de resultados
   */
-  vector<Distance> result;
   vector<string> curvas = server.getCurveNames();
+  vector<Distance> result;
   result.reserve(curvas.size());
   encrypted_result = server.distance(x_encrypted, y_encrypted, client.relin_keys);
 
