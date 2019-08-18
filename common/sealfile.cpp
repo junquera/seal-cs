@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "sealfile.h"
 
 void saveCiphertext(Ciphertext encrypted, string filename){
   ofstream ct;

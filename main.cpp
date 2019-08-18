@@ -1,18 +1,11 @@
 #include "client.h"
-#include "aux.h"
+#include "common/sealfile.h"
 
-vector<Distance> distance(SClient client, double mes, double temperatura){
+vector<Distance> distance(SClient client, SServer server, double mes, double temperatura){
 
   Ciphertext x_encrypted, y_encrypted, encrypted_result;
   x_encrypted = client.encrypt(mes);
   y_encrypted = client.encrypt(temperatura);
-
-  /*
-  Inicializamos las curvas con las que queremos trabajar
-  */
-  SServer server;
-  server.addCurva(curva_cabo_de_gata);
-  server.addCurva(curva_finisterre);
 
   /*
   Inicializamos el vector de resultados
@@ -46,15 +39,24 @@ int main(int argc, char** argv) {
   float y = 23.0;
 
   SClient client;
+  client.saveConfig();
+  
+  /*
+  Inicializamos las curvas con las que queremos trabajar
+  */
+  SServer server;
+  server.addCurva(curva_cabo_de_gata);
+  server.addCurva(curva_finisterre);
 
-  vector<Distance> result = distance(client, x, y);
+
+  vector<Distance> result = distance(client, server, x, y);
   for(int i = 0; i < result.size(); i++)
     cout << result[i].name << ": " << result[i].distance << endl;
 
-  Ciphertext test_x = client.encrypt(x);
-  saveCiphertext(test_x, "x.data");
-  Ciphertext test_x2 = loadCiphertext(client.parms, "x.data");
-  cout << client.decrypt(test_x2)[1] << endl;
+  // Ciphertext test_x = client.encrypt(x);
+  // saveCiphertext(test_x, "x.data");
+  // Ciphertext test_x2 = loadCiphertext(client.parms, "x.data");
+  // cout << client.decrypt(test_x2)[1] << endl;
 
 
   return 0;

@@ -1,13 +1,22 @@
 #include "server.h"
 
 SServer::SServer(){
+  SServer("");
+};
 
-  // Save parameters
-  ifstream parameters;
-  parameters.open("parameters.data", ios::binary);
-  EncryptionParameters parms = EncryptionParameters::Load(parameters);
+SServer::SServer(string config_mask) {
 
-  auto context = SEALContext::Create(parms);
+  stringstream stringStream;
+
+  stringStream.str("");
+  stringStream << config_mask << "params.data";
+  string params_path = stringStream.str();
+
+  EncryptionParameters* parms;
+  loadParametersFromFile(parms, params_path);
+  cout << "- " << config_mask << endl;
+
+  auto context = SEALContext::Create(*parms);
 
   evaluator = new Evaluator(context);
   encoder = new CKKSEncoder(context);

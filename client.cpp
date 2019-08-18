@@ -9,6 +9,9 @@ void SClient::setKeysFromFile(string keyFileName){
 	// loadSecretKeyFromFile(keyFileName, key);
 };
 
+void SClient::saveConfig(){
+  saveConfig("");
+};
 
 void SClient::saveConfig(string config_mask){
 
@@ -77,7 +80,6 @@ SClient::SClient(string config_mask) {
     parms->set_coeff_modulus(CoeffModulus::Create(
     poly_modulus_degree, { 60, 40, 40, 60 }));
   }
-
 
   auto context = SEALContext::Create(*parms);
   // print_parameters(context);

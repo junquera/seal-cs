@@ -7,6 +7,8 @@
 
 #include "seal/seal.h"
 #include "constants.h"
+#include "common/sealfile.h"
+
 #include <vector>
 
 
@@ -30,12 +32,13 @@ class SClient {
   public:
     SClient();
     SClient(string config_mask);
-    void saveConfig(string config_mask);
+    void genKeys();
+    void setKeysFromFile(string keyFileName);
     Ciphertext encrypt(double a);
     Ciphertext encrypt(vector<double> a);
     vector<double> decrypt(Ciphertext a);
-    void genKeys();
-    void setKeysFromFile(string keyFileName);
+    void saveConfig();
+    void saveConfig(string config_mask);
     PublicKey public_key;
     RelinKeys relin_keys;
     EncryptionParameters* parms;
