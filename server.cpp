@@ -1,7 +1,6 @@
 #include "server.h"
 
-SServer::SServer(){
-  SServer("");
+SServer::SServer() : SServer("") {
 };
 
 SServer::SServer(string config_mask) {
@@ -12,11 +11,10 @@ SServer::SServer(string config_mask) {
   stringStream << config_mask << "params.data";
   string params_path = stringStream.str();
 
-  EncryptionParameters* parms;
-  loadParametersFromFile(parms, params_path);
+  EncryptionParameters parms = loadParametersFromFile(params_path);
   cout << "- " << config_mask << endl;
 
-  auto context = SEALContext::Create(*parms);
+  auto context = SEALContext::Create(parms);
 
   evaluator = new Evaluator(context);
   encoder = new CKKSEncoder(context);

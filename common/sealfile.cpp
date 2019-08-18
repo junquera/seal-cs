@@ -19,12 +19,11 @@ Ciphertext loadCiphertext(EncryptionParameters* parms, string filename){
 };
 
 
-void loadParametersFromFile(EncryptionParameters* parms, string filename){
+EncryptionParameters loadParametersFromFile(string filename){
   // Save parameters
   ifstream parameters;
   parameters.open(filename, ios::binary);
-  EncryptionParameters _parms = EncryptionParameters::Load(parameters);
-  parms = &_parms;
+  return EncryptionParameters::Load(parameters);
 }
 
 

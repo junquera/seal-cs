@@ -14,7 +14,7 @@ using namespace seal;
 bool exists_file (string name);
 void saveCiphertext(Ciphertext encrypted, string filename);
 Ciphertext loadCiphertext(EncryptionParameters* parms, string filename);
-void loadParametersFromFile(EncryptionParameters* parms, string filename);
+EncryptionParameters loadParametersFromFile(string filename);
 void savePublicKeyToFile(PublicKey key, string filename);
 PublicKey loadPublicKeyFromFile(EncryptionParameters* parms, string filename);
 

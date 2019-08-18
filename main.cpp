@@ -39,8 +39,9 @@ int main(int argc, char** argv) {
   float y = 23.0;
 
   SClient client;
+  cout << client.parms->poly_modulus_degree() <<  endl;
   client.saveConfig();
-  
+
   /*
   Inicializamos las curvas con las que queremos trabajar
   */
