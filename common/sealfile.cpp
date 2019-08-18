@@ -45,6 +45,18 @@ PublicKey loadPublicKeyFromFile(EncryptionParameters* parms, string filename){
   return key;
 };
 
+RelinKeys loadRelinKeysFromFile(EncryptionParameters* parms, string filename){
+
+  ifstream rel;
+  rel.open(filename, ios::binary);
+  RelinKeys keys;
+
+  auto context = SEALContext::Create(*parms);
+  keys.load(context, rel);
+
+  return keys;
+};
+
 bool exists_file (string name) {
     if (FILE *file = fopen(name.c_str(), "r")) {
       fclose(file);

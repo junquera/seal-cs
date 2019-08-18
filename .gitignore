@@ -1,3 +1,6 @@
 main
+server
+client
+
 *.key
 *.data

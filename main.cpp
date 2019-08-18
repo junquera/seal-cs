@@ -1,5 +1,6 @@
 #include "client.h"
 #include "common/sealfile.h"
+#include "curvas.h"
 
 vector<Distance> distance(SClient client, SServer server, double mes, double temperatura){
 
@@ -39,7 +40,7 @@ int main(int argc, char** argv) {
   float y = 23.0;
 
   SClient client;
-  cout << client.parms->poly_modulus_degree() <<  endl;
+  // cout << client.parms->poly_modulus_degree() <<  endl;
   client.saveConfig();
 
   /*

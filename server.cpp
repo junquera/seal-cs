@@ -113,5 +113,4 @@ vector<string> SServer::getCurveNames(){
     names.push_back(c.name);
 
   return names;
-
-}
+};

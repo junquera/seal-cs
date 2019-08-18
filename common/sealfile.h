@@ -17,5 +17,5 @@ Ciphertext loadCiphertext(EncryptionParameters* parms, string filename);
 EncryptionParameters loadParametersFromFile(string filename);
 void savePublicKeyToFile(PublicKey key, string filename);
 PublicKey loadPublicKeyFromFile(EncryptionParameters* parms, string filename);
-
+RelinKeys loadRelinKeysFromFile(EncryptionParameters* parms, string filename);
 #endif
