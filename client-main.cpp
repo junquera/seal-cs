@@ -9,9 +9,9 @@ using namespace std;
 
 void enc(){
   float temperatura, mes;
-  cout << "Inserte temperatura: " << endl;
+  cout << "Inserte temperatura > ";
   cin >> temperatura;
-  cout << "Inserte mes: " << endl;
+  cout << "Inserte mes > ";
   cin >> mes;
 
   SClient client;

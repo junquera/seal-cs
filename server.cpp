@@ -12,7 +12,6 @@ SServer::SServer(string config_mask) {
   string params_path = stringStream.str();
 
   EncryptionParameters parms = loadParametersFromFile(params_path);
-  cout << "- " << config_mask << endl;
 
   auto context = SEALContext::Create(parms);
 

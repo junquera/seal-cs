@@ -141,7 +141,7 @@ void SClient::saveConfig(string config_mask){
   // Save parameters
   ofstream parameters, pub, sec, rel;
   parameters.open(params_path, ios::binary);
-  cout << parms->poly_modulus_degree() <<  endl;
+  // cout << parms->poly_modulus_degree() <<  endl;
   EncryptionParameters::Save(*parms, parameters);
 
   pub.open(pub_key_path, ios::binary);
