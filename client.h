@@ -32,6 +32,7 @@ class SClient {
   public:
     SClient();
     SClient(string config_mask);
+    SClient(string config_mask, size_t poly_modulus_degree, vector<int> coeff_modulus);
     void genKeys();
     void setKeysFromFile(string keyFileName);
     Ciphertext encrypt(double a);

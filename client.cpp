@@ -12,7 +12,9 @@ SClient::SClient() : SClient(""){
 
 };
 
-SClient::SClient(string config_mask) {
+SClient::SClient(string config_mask) : SClient(config_mask, 8192, { 60, 40, 40, 60 }){};
+
+SClient::SClient(string config_mask, size_t poly_modulus_degree, vector<int> coeff_modulus) {
 
   stringstream stringStream;
 
@@ -38,11 +40,10 @@ SClient::SClient(string config_mask) {
   } else {
     EncryptionParameters aux_parms(scheme_type::CKKS);
     parms = new EncryptionParameters(aux_parms);
-    size_t poly_modulus_degree = 8192;
     parms->set_poly_modulus_degree(poly_modulus_degree);
     parms->set_coeff_modulus(
       CoeffModulus::Create(
-        poly_modulus_degree, { 60, 40, 40, 60 }
+        poly_modulus_degree, coeff_modulus
       )
     );
   }

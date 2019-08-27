@@ -45,7 +45,6 @@ Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, Rel
       c.push_back(curvas[i].c);
     }
 
-
     encoder->encode(a, SCALE, a_plain);
     encoder->encode(b, SCALE, b_plain);
     encoder->encode(c, SCALE, c_plain);

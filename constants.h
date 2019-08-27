@@ -6,5 +6,4 @@
 
 const double SCALE = pow(2.0, 40);
 
-
 #endif
