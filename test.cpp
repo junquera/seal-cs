@@ -59,6 +59,7 @@ void test_n_products(int poly_modulus_degree_bits){
   while(noise_budget > 0){
     res++;
     evaluator.multiply_inplace(a_encrypted, b_encrypted);
+    // evaluator.relinearize_inplace(a_encrypted, relin_keys);
     noise_budget = decryptor.invariant_noise_budget(a_encrypted);
   }
 
@@ -145,7 +146,7 @@ void test_times(int poly_modulus_degree_bits){
   t0 = time(NULL);
   evaluator.multiply_inplace(a_encrypted, b_encrypted);
   cout << "multiply," << poly_modulus_degree_bits << "," << time(NULL) - t0 << endl;
-  
+
   t0 = time(NULL);
   evaluator.add_inplace(b_encrypted, b_encrypted);
   cout << "add," << poly_modulus_degree_bits << "," << time(NULL) - t0 << endl;
@@ -212,8 +213,10 @@ int main(int argc, char* argv[])
 
   // test();
   for(int i = 0; i <= 5; i++){
-    // test_n_products(10 + i);
-    test_times(10 + i);
+    cout << "poly_modulus_degree_bits,n" << endl;
+    test_n_products(10 + i);
+    // cout << "op,poly_modulus_degree_bits,t" << endl;
+    // test_times(10 + i);
   }
 
 }
