@@ -1,0 +1,7 @@
+poly_modulus_degree_bits,n
+10,0
+11,0
+12,0
+13,1
+14,4
+15,9

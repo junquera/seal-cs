@@ -39,11 +39,11 @@ void test_n_products(int poly_modulus_degree_bits){
   BatchEncoder encoder(context);
   size_t slot_count = encoder.slot_count();
 
-  Plaintext a_plain, b_plain;
+  Plaintext a_plain, b_plain, result_plain;
   vector<long> a, b;
   for(int i = 1; i < 15; i++){
-    a.push_back(i);
-    b.push_back(15 - i);
+    a.push_back(2);
+    b.push_back(2);
   }
 
   encoder.encode(a, a_plain);
@@ -59,11 +59,38 @@ void test_n_products(int poly_modulus_degree_bits){
   while(noise_budget > 0){
     res++;
     evaluator.multiply_inplace(a_encrypted, b_encrypted);
-    // evaluator.relinearize_inplace(a_encrypted, relin_keys);
+    evaluator.relinearize_inplace(a_encrypted, relin_keys);
     noise_budget = decryptor.invariant_noise_budget(a_encrypted);
   }
 
   cout << poly_modulus_degree_bits << "," << res << endl;
+
+
+  //
+  // vector<long> result_vector;
+  // decryptor.decrypt(a_encrypted, result_plain);
+  // encoder.decode(result_plain, result_vector);
+  //
+  // cout << result_vector[0] << endl;
+
+  /*
+  // No tiene sentido, se pueden hacer casi infinitas sumas...
+
+  encryptor.encrypt(a_plain, a_encrypted);
+  encryptor.encrypt(b_plain, b_encrypted);
+
+  noise_budget = decryptor.invariant_noise_budget(a_encrypted);
+
+  res = 0;
+  while(noise_budget > 0){
+    res++;
+    evaluator.add_inplace(a_encrypted, b_encrypted);
+    evaluator.relinearize_inplace(a_encrypted, relin_keys);
+    noise_budget = decryptor.invariant_noise_budget(a_encrypted);
+  }
+
+  cout << "sum," << poly_modulus_degree_bits << "," << res << endl;
+  */
 
 };
 
@@ -215,8 +242,8 @@ int main(int argc, char* argv[])
   for(int i = 0; i <= 5; i++){
     cout << "poly_modulus_degree_bits,n" << endl;
     test_n_products(10 + i);
-    // cout << "op,poly_modulus_degree_bits,t" << endl;
-    // test_times(10 + i);
+    cout << "op,poly_modulus_degree_bits,t" << endl;
+    test_times(10 + i);
   }
 
 }

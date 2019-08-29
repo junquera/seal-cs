@@ -1,0 +1,22 @@
+op,poly_modulus_degree_bits,t
+slots with 8192 poly_modulus_degree: 4096
+encode_batch,13,0
+encode,13,0
+encrypt_batch,13,0
+encrypt_number,13,0
+multiply,13,0
+add,13,0
+slots with 16384 poly_modulus_degree: 8192
+encode_batch,14,0
+encode,14,0
+encrypt_batch,14,0
+encrypt_number,14,0
+multiply,14,0
+add,14,0
+slots with 32768 poly_modulus_degree: 16384
+encode_batch,15,0
+encode,15,0
+encrypt_batch,15,0
+encrypt_number,15,1
+multiply,15,0
+add,15,0
