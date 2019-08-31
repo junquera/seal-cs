@@ -18,13 +18,13 @@ using namespace std;
 void test_n_products(int poly_modulus_degree_bits){
 
   size_t poly_modulus_degree = pow(2, poly_modulus_degree_bits);
-  auto coeff_modulus = CoeffModulus::BFVDefault(poly_modulus_degree);
+  vector<SmallModulus> coeff_modulus = CoeffModulus::BFVDefault(poly_modulus_degree);
 
   EncryptionParameters parms(scheme_type::BFV);
   parms.set_poly_modulus_degree(poly_modulus_degree);
   parms.set_coeff_modulus(coeff_modulus);
   parms.set_plain_modulus(PlainModulus::Batching(poly_modulus_degree, min(20*(poly_modulus_degree_bits - 9), 60)));
-
+  // cout << "PM: " << PlainModulus::Batching(poly_modulus_degree, min(20*(poly_modulus_degree_bits - 9), 60)).bit_count() << endl;
   auto context = SEALContext::Create(parms);
 
   KeyGenerator keygen(context);
@@ -65,7 +65,6 @@ void test_n_products(int poly_modulus_degree_bits){
 
   cout << poly_modulus_degree_bits << "," << res << endl;
 
-
   //
   // vector<long> result_vector;
   // decryptor.decrypt(a_encrypted, result_plain);
@@ -95,6 +94,21 @@ void test_n_products(int poly_modulus_degree_bits){
 };
 
 
+void test_n_products_ckks(int poly_modulus_degree_bits){
+
+  size_t poly_modulus_degree = pow(2, poly_modulus_degree_bits);
+
+  if(CoeffModulus::MaxBitCount(poly_modulus_degree) < 120)
+    return;
+
+  int coeff_modulus_max_len = CoeffModulus::MaxBitCount(poly_modulus_degree);
+  vector<int> coeff_modulus;
+  int values = ((coeff_modulus_max_len-120)/40);
+  cout << poly_modulus_degree_bits << "," << values << endl;
+
+};
+
+
 void test_times(int poly_modulus_degree_bits){
 
   size_t poly_modulus_degree = pow(2, poly_modulus_degree_bits);
@@ -105,6 +119,7 @@ void test_times(int poly_modulus_degree_bits){
   int coeff_modulus_max_len = CoeffModulus::MaxBitCount(poly_modulus_degree);
   vector<int> coeff_modulus;
   int values = ((coeff_modulus_max_len-120)/40);
+  cout << values << endl;
   coeff_modulus.reserve(values);
 
   coeff_modulus.push_back(60);
@@ -241,7 +256,10 @@ int main(int argc, char* argv[])
   // test();
   for(int i = 0; i <= 5; i++){
     cout << "poly_modulus_degree_bits,n" << endl;
+    cout << "-- BFV --" << endl;
     test_n_products(10 + i);
+    cout << "-- CKKS --" << endl;
+    test_n_products_ckks(10 + i);
     cout << "op,poly_modulus_degree_bits,t" << endl;
     test_times(10 + i);
   }
