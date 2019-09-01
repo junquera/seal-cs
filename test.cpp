@@ -195,6 +195,103 @@ void test_times(int poly_modulus_degree_bits){
 
 };
 
+void ckks_bounds(){
+
+  int poly_modulus_degree_bits = 15;
+  size_t poly_modulus_degree = pow(2, poly_modulus_degree_bits);
+
+  if(CoeffModulus::MaxBitCount(poly_modulus_degree) < 120)
+    return;
+
+  int coeff_modulus_max_len = CoeffModulus::MaxBitCount(poly_modulus_degree);
+  vector<int> coeff_modulus;
+  int values = ((coeff_modulus_max_len-120)/40);
+  coeff_modulus.reserve(values);
+
+  coeff_modulus.push_back(60);
+
+  for(int i = 0; i < values-2; i++)
+    coeff_modulus.push_back(40);
+
+  coeff_modulus.push_back(60);
+
+  EncryptionParameters parms(scheme_type::CKKS);
+  parms.set_poly_modulus_degree(poly_modulus_degree);
+  parms.set_coeff_modulus(
+    CoeffModulus::Create(
+      poly_modulus_degree, coeff_modulus
+    )
+  );
+
+  auto context = SEALContext::Create(parms);
+
+  KeyGenerator keygen(context);
+  auto public_key = keygen.public_key();
+  auto secret_key = keygen.secret_key();
+  auto relin_keys = keygen.relin_keys();
+
+  Encryptor encryptor(context, public_key);
+  Evaluator evaluator(context);
+  Decryptor decryptor(context, secret_key);
+
+  CKKSEncoder encoder(context);
+  size_t slot_count = encoder.slot_count();
+
+  Plaintext a_plain, b_plain;
+
+  vector<double> input;
+  input.reserve(slot_count);
+
+  double curr_point = 0;
+  double step_size = 1.0 / (static_cast<double>(slot_count) - 1);
+  for (size_t i = 0; i < slot_count; i++, curr_point += step_size)
+  {
+    input.push_back(3.14);
+  }
+
+  double scale = pow(2.0, 120);
+
+  time_t t0 = time(NULL);
+  encoder.encode(input, scale, a_plain);
+
+  t0 = time(NULL);
+  encoder.encode(3.14, scale, b_plain);
+
+
+  Ciphertext a_encrypted, b_encrypted;
+
+  t0 = time(NULL);
+  encryptor.encrypt(a_plain, a_encrypted);
+
+  t0 = time(NULL);
+  encryptor.encrypt(b_plain, b_encrypted);
+
+  t0 = time(NULL);
+  for(int i = 0; i < values - 2; i++) {
+    cout << "# Mult: " << i << endl;
+    Plaintext result_plain_a,  result_plain_b,  result_plain_c;
+    decryptor.decrypt(a_encrypted, result_plain_a);
+    decryptor.decrypt(b_encrypted, result_plain_b);
+
+    evaluator.multiply_inplace(a_encrypted, b_encrypted);
+    evaluator.rescale_to_next_inplace(a_encrypted);
+    evaluator.rescale_to_next_inplace(b_encrypted);
+    evaluator.relinearize_inplace(a_encrypted, relin_keys);
+    evaluator.relinearize_inplace(b_encrypted, relin_keys);
+
+    decryptor.decrypt(a_encrypted, result_plain_c);
+
+    vector<double> result_vector;
+    encoder.decode(result_plain_a, result_vector);
+    cout << result_vector[0] << " * ";
+    encoder.decode(result_plain_b, result_vector);
+    cout << result_vector[0] << " = ";
+    encoder.decode(result_plain_c, result_vector);
+    cout << result_vector[0] << endl;
+  }
+
+}
+
 void test() {
   size_t poly_modulus_degree = 8192;
 
@@ -255,13 +352,14 @@ int main(int argc, char* argv[])
 
   // test();
   for(int i = 0; i <= 5; i++){
-    cout << "poly_modulus_degree_bits,n" << endl;
-    cout << "-- BFV --" << endl;
-    test_n_products(10 + i);
-    cout << "-- CKKS --" << endl;
-    test_n_products_ckks(10 + i);
-    cout << "op,poly_modulus_degree_bits,t" << endl;
-    test_times(10 + i);
+    // cout << "poly_modulus_degree_bits,n" << endl;
+    // cout << "-- BFV --" << endl;
+    // test_n_products(10 + i);
+    // cout << "-- CKKS --" << endl;
+    // test_n_products_ckks(10 + i);
+    // cout << "op,poly_modulus_degree_bits,t" << endl;
+    // test_times(10 + i);
+    ckks_bounds();
   }
 
 }

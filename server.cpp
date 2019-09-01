@@ -84,7 +84,6 @@ Ciphertext SServer::distance(Ciphertext x_encrypted, Ciphertext y_encrypted, Rel
     evaluator->rescale_to_next_inplace(p3_encrypted);
     evaluator->mod_switch_to_next_inplace(p3_encrypted);
 
-
     p2_encrypted.scale() = SCALE;
     p3_encrypted.scale() = SCALE;
 
